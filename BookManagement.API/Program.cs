@@ -102,6 +102,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.MapGet("users/me", async (ClaimsPrincipal claims, AppDbContext context) =>
+{
+    string userId = claims.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+    return await context.Users.FindAsync(userId);
+});
+
 app.UseHttpsRedirection();
 app.MapIdentityApi<ApplicationUser>();
 

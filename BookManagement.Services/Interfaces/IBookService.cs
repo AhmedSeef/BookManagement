@@ -10,5 +10,6 @@ namespace BookManagement.Services.Interfaces
         Task AddBookAsync(BookDto bookDto);
         Task UpdateBookAsync(int id, BookDto bookDto);
         Task DeleteBookAsync(int id);
+        Task RestoreBookAsync(int id);
     }
 }

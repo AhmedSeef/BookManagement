@@ -21,7 +21,6 @@ public class BooksController : ControllerBase
 
     // ✅ GET: api/Books - Retrieve all books (with optional pagination)
     [HttpGet]
-    [HttpGet]
     public async Task<ActionResult<IEnumerable<Book>>> GetBooks([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
         if (pageNumber < 1 || pageSize < 1)
@@ -126,5 +125,16 @@ public class BooksController : ControllerBase
             _logger.LogError(ex, $"Error deleting book with ID {id}");
             return StatusCode(500, new { message = "An error occurred while deleting the book." });
         }
+    }
+
+    [HttpPut("restore/{id}")]
+    public async Task<IActionResult> RestoreBook(int id)
+    {
+        var book = await _bookService.GetBookByIdAsync(id);
+        if (book == null)
+            return NotFound(new { message = $"Book with ID {id} not found." });
+
+        await _bookService.RestoreBookAsync(id);
+        return Ok(new { message = $"Book with ID {id} has been restored." });
     }
 }

@@ -26,7 +26,6 @@ namespace BookManagement.Data.Repositories.Implementations
         public async Task<Book> GetByIdAsync(int id)
         {
             return await _context.Books
-                .Where(b => !b.IsDeleted) 
                 .FirstOrDefaultAsync(b => b.Id == id);
         }
 
@@ -40,6 +39,16 @@ namespace BookManagement.Data.Repositories.Implementations
         {
             _context.Books.Update(book);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task RestoreAsync(int id)
+        {
+            var book = await _context.Books.FindAsync(id);
+            if (book != null && book.IsDeleted)
+            {
+                book.IsDeleted = false;  // ✅ Restore book
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task DeleteAsync(int id)

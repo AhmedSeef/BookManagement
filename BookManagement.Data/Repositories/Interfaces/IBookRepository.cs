@@ -8,6 +8,8 @@ namespace BookManagement.Data.Repositories.Interfaces
         Task<Book> GetByIdAsync(int id);
         Task AddAsync(Book book);
         Task UpdateAsync(Book book);
+        Task RestoreAsync(int id);
+
         Task DeleteAsync(int id);
         Task<bool> ExistsByTitleAsync(string title);
         Task IncrementBookViewsAsync(int id);

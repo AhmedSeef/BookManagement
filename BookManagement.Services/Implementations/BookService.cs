@@ -66,5 +66,11 @@ namespace BookManagement.Services.Implementations
             await _unitOfWork.Books.DeleteAsync(id);
             await _unitOfWork.CompleteAsync();
         }
+
+        public async Task RestoreBookAsync(int id)
+        {
+            await _unitOfWork.Books.RestoreAsync(id);
+            await _unitOfWork.CompleteAsync();
+        }
     }
 }

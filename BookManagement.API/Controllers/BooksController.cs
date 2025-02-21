@@ -1,4 +1,5 @@
-﻿using BookManagement.Services.DTOs;
+﻿using BookManagement.Data.Models;
+using BookManagement.Services.DTOs;
 using BookManagement.Services.Exceptions;
 using BookManagement.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -20,21 +21,15 @@ public class BooksController : ControllerBase
 
     // ✅ GET: api/Books - Retrieve all books (with optional pagination)
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<BookDto>>> GetBooks()
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Book>>> GetBooks([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
-        try
-        {
-            var books = await _bookService.GetAllBooksAsync();
-            if (books == null || !books.Any())
-                return NotFound(new { message = "No books found." });
+        if (pageNumber < 1 || pageSize < 1)
+            return BadRequest("Page number and page size must be greater than zero.");
 
-            return Ok(books);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error fetching books");
-            return StatusCode(500, new { message = "An error occurred while retrieving books." });
-        }
+        var books = await _bookService.GetPaginatedBooksAsync(pageNumber, pageSize);
+
+        return Ok(books);
     }
 
     // ✅ GET: api/Books/{id} - Retrieve a single book by ID

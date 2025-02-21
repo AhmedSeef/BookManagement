@@ -17,10 +17,9 @@ namespace BookManagement.Services.Implementations
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<BookDto>> GetAllBooksAsync()
+        public async Task<IEnumerable<Book>> GetPaginatedBooksAsync(int pageNumber, int pageSize)
         {
-            var books = await _unitOfWork.Books.GetAllAsync();
-            return _mapper.Map<IEnumerable<BookDto>>(books);
+            return await _unitOfWork.Books.GetAllAsync(pageNumber, pageSize);
         }
 
         public async Task<BookDto> GetBookByIdAsync(int id)

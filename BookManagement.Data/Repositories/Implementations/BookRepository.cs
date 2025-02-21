@@ -13,14 +13,21 @@ namespace BookManagement.Data.Repositories.Implementations
             _context = context;
         }
 
-        public async Task<IEnumerable<Book>> GetAllAsync()
+        public async Task<IEnumerable<Book>> GetAllAsync(int pageNumber, int pageSize)
         {
-            return await _context.Books.ToListAsync();
+            return await _context.Books
+                .Where(b => !b.IsDeleted) 
+                .OrderBy(b => b.Id)     
+                .Skip((pageNumber - 1) * pageSize) 
+                .Take(pageSize)              
+                .ToListAsync();
         }
 
         public async Task<Book> GetByIdAsync(int id)
         {
-            return await _context.Books.FindAsync(id);
+            return await _context.Books
+                .Where(b => !b.IsDeleted) 
+                .FirstOrDefaultAsync(b => b.Id == id);
         }
 
         public async Task AddAsync(Book book)
@@ -40,7 +47,7 @@ namespace BookManagement.Data.Repositories.Implementations
             var book = await _context.Books.FindAsync(id);
             if (book != null)
             {
-                _context.Books.Remove(book);
+                book.IsDeleted = true; 
                 await _context.SaveChangesAsync();
             }
         }
